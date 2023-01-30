@@ -19,45 +19,42 @@ screen = pygame.display.set_mode((screen_size_x, screen_size_y))
 # plutot en fps mais comme ça le nom est claire, pour plus de visibilté a baisser, sinon on laisse a 60 par convention (60 fps les écrans t'as capter)
 vitesse_affichage = 10
 
-val_aleatoire = 20 # correspond au déplacement max des points d'un instant à l'autre
-rayon_cercle = 10
-nbvert = 50 # nombre d'habitants vert au départ
-nbrouge = 50 # nombre d'habitants rouge au départ
 simulation_active = True
+val_aleatoire = 20 # correspond au déplacement max des points d'un instant à l'autre
+rayon_cercle = 9
+nbvert = 50 # nombre d'habitants vert au départ
+nbrouge = 1 # nombre d'habitants rouge au départ
+nbjaune = 0 # nombre d'habitants jaune au départ
+nbrat = 1 # nombre de rats contaminés au départ
 vert = [[screen_size_x/2,screen_size_y/2] for i in range(nbvert)] # liste qui contiendra les positions des points verts, à initialiser aux positions de départs
 rouge = [[0,0] for i in range(nbrouge)] # liste qui contiendra les positions des points rouges, à initialiser aux positions de départs
+jaune = [[600,600] for i in range(nbjaune)]
+rat = [[700,0] for i in range(nbrat)]
 Habitantvert = [0 for i in range(nbvert)] # liste qui contiendra les cercles verts
 Habitantrouge = [0 for i in range(nbrouge)] # liste qui contiendra les cercles rouges
+Habitantjaune = [0 for i in range(nbjaune)]
+Habitantrat = [0 for i in range(nbrat)]
 
 """
 Fonction qui dessine les cercles verts
-entrées : listes des positions verts, taille du cercle voulu, fond d'écran, déplacements x et y, numéro i du point
+entrées : listes des positions de la couleur voulu, chaine de caractère contenant la couleur voulu en anglais,liste des cercles, taille du cercle voulu, fond d'écran, déplacements x et y, numéro i du point
 """
-def habitantvert(vert,rayon_cercle,screen,x,y,i):
-    vert[0] += x # déplace le point en x
-    vert[1] += y # déplace le point en y
-    Habitantvert[i] = pygame.draw.circle(screen, 'green', (vert[0],vert[1]), rayon_cercle) # met dans la liste des cercles le cercle dessiné
-    return vert
+def habitant(couleur,color,Habitant,rayon_cercle,screen,x,y,i):
+    couleur[0] += x # déplace le point en x
+    couleur[1] += y # déplace le point en y
+    Habitant[i] = pygame.draw.circle(screen, color, (couleur[0],couleur[1]), rayon_cercle) # met dans la liste des cercles le cercle dessiné
+    return couleur
 
-"""
-Fonction qui dessine les cercles rouges
-entrées : listes des positions rouges, taille du cercle voulu, fond d'écran, déplacements x et y, numéro i du point
-"""
-def habitantrouge(rouge,rayon_cercle,screen,x,y,i):
-    rouge[0] += x # déplace le point en x
-    rouge[1] += y # déplace le point en y
-    Habitantrouge[i]=pygame.draw.circle(screen, 'red', (rouge[0],rouge[1]), rayon_cercle) # met dans la liste des cercles le cercle dessiné
-    return rouge
 
 """
 Fonction qui déplace les points 
 entrées : la liste vert ou rouge selon les points à déplacer, la fonction pour dessiner cercle, val_aleatoire, rayon_cercle, screen, numéro i du point 
 sorties : déplacements x et y
 """
-def DéplacementPoints(couleur,habitant1,val_aleatoire,rayon_cercle,screen,i):
+def DéplacementPoints(couleur,color,Habitant,val_aleatoire,rayon_cercle,screen,i):
     x = random.uniform(-val_aleatoire, val_aleatoire) # génère une valeur aléatoire (correspondra au déplacement en x) entre -val_aleatoire et val_aleatoire
     y = random.uniform(-val_aleatoire, val_aleatoire) # génère une valeur aléatoire (correspondra au déplacement en y) entre -val_aleatoire et val_aleatoire
-    couleur[i]=habitant1(couleur[i],rayon_cercle,screen,x,y,i) # appel la fonction habitantvert ou habitantrouuge
+    couleur[i] = habitant(couleur[i],color,Habitant,rayon_cercle,screen,x,y,i) # appel la fonction habitant
     couleur[i] = VerifPos(couleur[i],val_aleatoire,rayon_cercle,screen_size_x,screen_size_y,x,y) # appel la fonction VerifPos
     return couleur,x,y
 
@@ -91,31 +88,54 @@ def VerifPos(pos,val_aleatoire,rayon_cercle,screen_size_x,screen_size_y,x,y):
 
 
 """
-Fonctions qui calcule la distance entre 2 points, si proche alors collisions, donc change de couleur
+Fonctions qui calcule la distance entre 2 points, si proche alors collisions, donc change de couleur (c1 rencontre c2 > c1 devient c2)
 entrées : vert,rouge,Habitantvert,Habitantrouge,nbvert,nbrouge,rayon_cercle
 sorties : nbvert,nbrouge
 """
-def collision(vert,rouge,Habitantvert,Habitantrouge,nbvert,nbrouge,rayon_cercle):
+def collision(c1,c2,Habitant1,Habitant2,nb1,nb2,color,rayon_cercle,facteur):
     i = 0
-    while i != nbvert:
+    while i != nb1:
         col = False
-        for j in range(nbrouge-2):
-            distance = ((vert[i][0] - rouge[j][0])**2+(vert[i][1] - rouge[j][1])**2)**(1/2)
+        for j in range(nb2):
+            distance = ((c1[i][0] - c2[j][0])**2+(c1[i][1] - c2[j][1])**2)**(1/2)
             if (distance<(4*rayon_cercle)):
                 #print('collision')
                 col = True
                 pourcent=random.uniform(0,1) # pourcentage de chance de devenir malade
-        if col and pourcent>0.5:
-            rouge.insert(j,vert[i]) # ajoute nouvelle position du point rouge dans la liste
-            Habitantrouge.insert(j, pygame.draw.circle(screen, 'red', (vert[i][0],vert[i][1]), rayon_cercle)) # dessine nouveau point rouge
-            Habitantvert.pop(i) # supprime ancien point vert
-            vert.pop(i) # enlève position ancien point vert de la liste
-            nbvert -= 1 # enlève 1 au nombre d'habitants vert
-            nbrouge += 1 # ajoute 1 au nombre d'habitants rouge
+        if col and pourcent<facteur:
+            c2.insert(j,c1[i]) # ajoute nouvelle position du point rouge dans la liste
+            Habitant2.insert(j, pygame.draw.circle(screen, color, (c1[i][0],c1[i][1]), rayon_cercle)) # dessine nouveau point rouge
+            Habitant1.pop(i) # supprime ancien point vert
+            c1.pop(i) # enlève position ancien point vert de la liste
+            nb1 -= 1 # enlève 1 au nombre d'habitants vert
+            nb2 += 1 # ajoute 1 au nombre d'habitants rouge
         else:
             i +=1 # si pas de collision on passe à l'indice d'après
-    return nbvert,nbrouge
+    return nb1,nb2
 
+"""
+Fonction comme collision sauf que quand c1 rencontre c2, c2 devient c3 et c1 reste
+"""
+def collision2(c1,c2,c3,Habitant1,Habitant2,Habitant3,nb1,nb2,nb3,color,rayon_cercle,facteur):
+    i = 0
+    while i != nb1:
+        col = False
+        for j in range(nb2):
+            distance = ((c1[i][0] - c2[j][0])**2+(c1[i][1] - c2[j][1])**2)**(1/2)
+            if (distance<(4*rayon_cercle)):
+                #print('collision')
+                col = True
+                pourcent=random.uniform(0,1) # pourcentage de chance de devenir malade
+        if col and pourcent<facteur:
+            c3.insert(j,c1[i]) # ajoute nouvelle position du point jaune dans la liste
+            Habitant3.insert(j, pygame.draw.circle(screen, color, (c1[i][0],c1[i][1]), rayon_cercle)) # dessine nouveau point jaune
+            Habitant2.pop(i) # supprime ancien point vert
+            c2.pop(i) # enlève position ancien point vert de la liste
+            nb2 -= 1 # enlève 1 au nombre d'habitants vert
+            nb3 += 1 # ajoute 1 au nombre d'habitants jaune
+        else:
+            i +=1 # si pas de collision on passe à l'indice d'après
+    return nb2,nb3
 
 
 while True: # boucle infinie
@@ -125,10 +145,16 @@ while True: # boucle infinie
     if simulation_active:  # si on veut que la simul continue
         screen.fill('black')  # couleur du fond
         for i in range(nbvert):
-            vert,x1,y1=DéplacementPoints(vert,habitantvert,val_aleatoire,rayon_cercle,screen,i) #appel la fonction DéplacementPoints
+            vert,x1,y1=DéplacementPoints(vert,'green',Habitantvert,val_aleatoire,rayon_cercle,screen,i) #appel la fonction DéplacementPoints
         for i in range(nbrouge):
-            rouge,x2,y2=DéplacementPoints(rouge,habitantrouge,val_aleatoire,rayon_cercle,screen,i) #appel la fonction DéplacementPoints
-        nbvert,nbrouge=collision(vert,rouge,Habitantvert,Habitantrouge,nbvert,nbrouge,rayon_cercle) #appel la fonction collision
+            rouge,x2,y2=DéplacementPoints(rouge,'red',Habitantrouge,val_aleatoire,rayon_cercle,screen,i) #appel la fonction DéplacementPoints
+        for i in range(nbjaune):
+            jaune,x3,y3=DéplacementPoints(jaune,'yellow',Habitantjaune,val_aleatoire,rayon_cercle,screen,i)
+        for i in range(nbrat):
+            rat,x4,y4=DéplacementPoints(rat,'gray',Habitantrat,val_aleatoire,rayon_cercle,screen,i)
+        nbvert,nbjaune=collision(vert,jaune,Habitantvert,Habitantjaune,nbvert,nbjaune,'yellow',rayon_cercle,0.5) #appel la fonction collision
+        nbjaune,nbrouge=collision(jaune,rouge,Habitantjaune,Habitantrouge,nbjaune,nbrouge,'red',rayon_cercle,0.3)
+        nbvert,nbjaune=collision2(rat,vert,jaune,Habitantrat,Habitantvert,Habitantjaune,nbrat,nbvert,nbjaune,'yellow',rayon_cercle,0.05)
 
     clock.tick(vitesse_affichage)  # vitesse
     pygame.display.update()  # truc qui affiche tout
