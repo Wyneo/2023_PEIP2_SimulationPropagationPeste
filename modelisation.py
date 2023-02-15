@@ -25,7 +25,7 @@ val_aleatoire = 30 # correspond au déplacement max des points d'un instant à l
 rayon_cercle = 10
 
 # nombre d'habitants au départ
-nbvert, nbrouge, nbjaune, nbrat, nbmort = 50, 0, 0, 3, 0
+nbvert, nbjaune, nbrouge, nbrat, nbmort = 50, 0, 0, 3, 0
 nbtot = nbrouge+nbvert+nbjaune+nbrat+nbmort
 # facteurs de chance (ex : factjr = facteur de jaune en rouge)
 factjr = 0.4
@@ -40,15 +40,13 @@ tattjr = 4000
 tattjv = 2000
 tattjn = 4000
 tattrn = 1500
-tattgn = 50000
-
-
-
-
-
+tattgn = 30000
 
 Habitant = [] # liste qui stockera tous les "objets" points
-
+R0 = [] # liste du nombre de gens contaminé par les points lors du passage de vert à rouge
+couleur = [] # vaut 'r' si le point est rouge à un moment
+sommeR0 = 0 # somme des contaminations de vert à rouge
+nbrougetot = 0 # nb de points rouge qu'il y a eu au total
 
 """
 Fonction qui dessine les cercles de couleurs voulus, sert seulement au moment d'initialiser les points
@@ -110,16 +108,18 @@ sorties : nombre d'habitants de la couleur c1 et c2
 def collision(c1,c2,nb1,nb2,nbtot,rayon_cercle,facteur):
     for i in range(nbtot):
         col =False
-        if Habitant[i].color == c1: # si le point est bien de la couleur c1
+        if Habitant[i].color == c1:  # si le point est bien de la couleur c1
             for j in range(nbtot):
-                if Habitant[j].color == c2: # si le point est bien de la couleur c2
+                if Habitant[j].color == c2:  # si le point est bien de la couleur c2
                     distance = ((Habitant[i].posx - Habitant[j].posx)**2+(Habitant[i].posy - Habitant[j].posy)**2)**(1/2)
                     if (distance<(4*rayon_cercle)):
                         col = True
-                        pourcent = random.uniform(0,1) # nombre aléatoire correspond au pourcentage de chance de changer de couleur
-            if col and pourcent < facteur: # s'il y a eu collision et que le nb aleatoire est inférieur au facteur définit
-                Habitant[i].color = c2 # changement de couleur
-                Habitant[i].temps = pygame.time.get_ticks() # nouveau temps : temps au moment de la "création" du "nouveau" point
+                        pourcent = random.uniform(0,1)  # nombre aléatoire correspond au pourcentage de chance de changer de couleur
+                        if pourcent < facteur:
+                            R0[j] += 1  # s'il y a eu contamination on ajoute un à lan case du point
+            if col and pourcent < facteur:  # s'il y a eu collision et que le nb aleatoire est inférieur au facteur définit
+                Habitant[i].color = c2  # changement de couleur
+                Habitant[i].temps = pygame.time.get_ticks()  # nouveau temps : temps au moment de la "création" du "nouveau" point
                 nb1 -= 1  # enlève 1 au nombre d'habitants de la couleur c1
                 nb2 += 1  # ajoute 1 au nombre d'habitants de la couleur c2
     return nb1,nb2
@@ -164,6 +164,8 @@ def verifTemps(c1,c2,nb1,nb2,time,tattente,facteur,i):
 for i in range(nbtot):
     cercle = habitant('white', random.uniform(0,screen_size_x-10), random.uniform(0,screen_size_y-10), pygame.time.get_ticks())
     Habitant.append(cercle)
+    R0.append(0)  # initialisation de la liste
+    couleur.append(0)  # initialisation de la liste
 # puis on créer les "bons" points au couleur voulu
 for i in range(nbvert):
     Habitant, x1, y1 = DéplacementPoints('green', Habitant[i].posx, Habitant[i].posy, val_aleatoire, rayon_cercle, i)  # appel la fonction DéplacementPoints
@@ -174,12 +176,14 @@ for k in range(nbvert + nbjaune, nbvert + nbjaune + nbrat):
 for m in range(nbvert + nbjaune + nbrat, nbvert + nbjaune + nbrat + nbrouge):
     Habitant, x2, y2 = DéplacementPoints('red', Habitant[m].posx, Habitant[m].posy, val_aleatoire, rayon_cercle,m)
 
+
 #simulation
 
-while True: # boucle infinie
+continuer = True
+while continuer: # boucle infinie
     for event in pygame.event.get():
         if event.type == pyl.QUIT:  # quiter le prog et que ça fasse pas une boucle infinie
-            sys.exit()
+            continuer = False
     if simulation_active:  # si on veut que la simul continue
         screen.fill('black')  # couleur du fond
         font = pygame.font.Font(None, int(screen_size_x/30))
@@ -194,13 +198,26 @@ while True: # boucle infinie
             Habitant[i].posy += y
             Habitant[i].posx, Habitant[i].posy = VerifPos(Habitant[i].posx, Habitant[i].posy, val_aleatoire,rayon_cercle, screen_size_x, screen_size_y, x,y)  # appel la fonction VerifPos
             Habitant[i].dessin() # dessine les points
-            verifTemps('yellow','red',nbjaune,nbrouge,time1,tattjr,factjr,i) # les points jaunes deviennent rouges au bout d'un moment
-            verifTemps('red','black',nbrouge,nbmort,time1,tattrn,factrn,i) # les points rouges deviennent noirs (meurent) au bout d'un moment
-            verifTemps('yellow','green',nbjaune,nbvert,time1,tattjv,factjv,i) # les points jaunes deviennent verts (guérissent) au bout d'un moment
-            verifTemps('yellow','black',nbjaune,nbmort,time1,tattjn,factjn,i) # les points jaunes deviennent noirs (meurent) au bout d'un moment
-            verifTemps('gray','black',nbrat,nbmort,time1,tattgn,factgn,i) # les points gris (rats) deviennent noirs (meurent) au bout d'un moment
+            nbjaune,nbrouge = verifTemps('yellow','red',nbjaune,nbrouge,time1,tattjr,factjr,i) # les points jaunes deviennent rouges au bout d'un moment
+            nbrouge,nbmort = verifTemps('red','black',nbrouge,nbmort,time1,tattrn,factrn,i) # les points rouges deviennent noirs (meurent) au bout d'un moment
+            nbjaune,nbvert = verifTemps('yellow','green',nbjaune,nbvert,time1,tattjv,factjv,i) # les points jaunes deviennent verts (guérissent) au bout d'un moment
+            nbjaune,nbmort = verifTemps('yellow','black',nbjaune,nbmort,time1,tattjn,factjn,i) # les points jaunes deviennent noirs (meurent) au bout d'un moment
+            nbrat,nbmort = verifTemps('gray','black',nbrat,nbmort,time1,tattgn,factgn,i) # les points gris (rats) deviennent noirs (meurent) au bout d'un moment
+            if Habitant[i].color == 'red': # si le point est rouge on met 'r' dans le tableau afin de savoir à la fin qui a été rouge à un momen t
+                couleur[i] = 'r'
         nbvert,nbrouge = collision('green', 'red', nbvert, nbrouge,nbtot,rayon_cercle,factvr) # appel la fonction collision : les points verts sont contaminés par les rouges
         nbvert,nbjaune = collision2('gray','green','yellow',nbrat,nbvert,nbjaune,nbtot,rayon_cercle,factgvj) # appel la fonction collision2 : les points gris (rats) contaminent les verts  qui deviennent jaunes
-
     clock.tick(vitesse_affichage)  # vitesse
     pygame.display.update()  # truc qui affiche tout
+
+"""
+On regarde si le point a été rouge à un moment
+Si oui on ajoute son nombre de contamination, et on compte le nombre de point rouge
+Ensuite on divise la somme des contaminations par le nombre de rouge
+"""
+for i in range(nbtot):
+    if couleur[i] == 'r':
+        sommeR0 += R0[i]
+        nbrougetot += 1
+print(nbvert, sommeR0, nbrougetot, sommeR0/nbrougetot) # affiche le nombre de vert restant, le nombre total de contamination, le nombre de rouge qu'il y a eu au total, le R0
+
