@@ -16,7 +16,7 @@ screen = pygame.display.set_mode((screen_size_x, screen_size_y))
 
 class habitant:
 
-    def __init__(self,color,posx,posy,temps,rayon=10):
+    def __init__(self,color,posx,posy,temps,rayon):
         self.color = color
         self.posx = posx
         self.posy = posy
