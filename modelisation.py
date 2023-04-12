@@ -19,15 +19,15 @@ screen = pygame.display.set_mode((screen_size_x, screen_size_y))
 """
 
 # plutot en fps mais comme ça le nom est claire, pour plus de visibilté a baisser, sinon on laisse a 60 par convention (60 fps les écrans t'as capter)
-vitesse_affichage = 10
+vitesse_affichage = 6
 simulation_active = True
-val_aleatoire = 20 # correspond au déplacement max des points d'un instant à l'autre
-rayon_cercle = 2
+val_aleatoire = 10 # correspond au déplacement max des points d'un instant à l'autre
+rayon_cercle = 1
 n=1
 test=0 # nombre de tours de boucle depuis que la fenêtre est lancée
 
 # nombre d'habitants au départ
-nbvert, nbjaune, nbrouge, nbrat, nbmort = 1000, 0, 0, 50, 0
+nbvert, nbjaune, nbrouge, nbrat, nbmort = 500, 0, 0, 25, 0
 nbtot = nbrouge+nbvert+nbjaune+nbrat+nbmort
 
 # facteurs de chance (ex : factjr = facteur de jaune en rouge) compris entre 0 et 1
@@ -57,10 +57,10 @@ nbrougetot = 0 # nb de points rouge qu'il y a eu au total
 Fonction qui dessine les cercles de couleurs voulus, sert seulement au moment d'initialiser les points
 entrées : couleur voulu, positions x et y du point, le temps à l'instant ou les points sont créé, déplacements x et y, numéro i du point
 """
-def hab(color,positionx,positiony,temps,x,y,rayon_cercle,i):
+def hab(color,positionx,positiony,temps,x,y,rayon_cercle,i,screen,endroit,preendroit,objectif):
     positionx += x
     positiony += y
-    cercle = habitant(color,positionx,positiony,temps,rayon_cercle)
+    cercle = habitant(color,positionx,positiony,temps,rayon_cercle,screen,endroit,preendroit,objectif)
     cercle.dessin() # dessine les points
     Habitant[i] = cercle # ajout des points dans la liste
     return Habitant[i]
@@ -70,10 +70,10 @@ Fonction qui déplace les points, à l'initialisation
 entrées : la couleur des points à déplacer, leur position x et y, val_aleatoire, rayon_cercle, numéro i du point, nb de tours 
 sorties : la liste Habitant, les déplacements x et y
 """
-def DéplacementPoints(color,positionx,positiony,val_aleatoire,rayon_cercle,i,test):
+def DéplacementPoints(color,positionx,positiony,val_aleatoire,rayon_cercle,i,test,screen,endroit,preendroit):
     x = random.uniform(-val_aleatoire, val_aleatoire) # génère une valeur aléatoire (correspondra au déplacement en x) entre -val_aleatoire et val_aleatoire
     y = random.uniform(-val_aleatoire, val_aleatoire) # génère une valeur aléatoire (correspondra au déplacement en y) entre -val_aleatoire et val_aleatoire
-    Habitant[i]=hab(color,positionx,positiony,test,x,y,rayon_cercle,i) # appel la fonction hab
+    Habitant[i]=hab(color,positionx,positiony,test,x,y,rayon_cercle,i,screen,endroit,preendroit) # appel la fonction hab
     Habitant[i].posx,Habitant[i].posy = VerifPos(Habitant[i].posx,Habitant[i].posy,val_aleatoire,rayon_cercle,screen_size_x,screen_size_y,x,y) # appel la fonction VerifPos
     return Habitant,x,y
 
@@ -103,7 +103,11 @@ def VerifPos(positionx,positiony,val_aleatoire,rayon_cercle,screen_size_x,screen
     else:
         y = random.uniform(-val_aleatoire, 0)
         positiony -= abs(y)
+
+
     return positionx,positiony
+
+
 
 """
 Fonctions qui calcule la distance entre 2 points, si proche alors collisions, donc change de couleur (c1 rencontre c2 > c1 devient c2)
@@ -161,6 +165,10 @@ def verifTempsSup(c1,c2,nb1,nb2,tattente,facteur,i,test):
             Habitant[i].temps = test # nouveau temps : temps au moment de la "création" du "nouveau" point
             nb1 -= 1
             nb2 += 1
+            if c2 == 'black':
+                Habitant[i].posx, Habitant[i].posy = -10000, -10000
+                Habitant[i].endroit, Habitant[i].preendroit = -1, -1
+
     return nb1,nb2
 
 """
@@ -189,9 +197,11 @@ def rat(c1,c2,nb1,nb2,test,tattente,n,i):
             n += 1
             nb1 -= 1
             nb2 += 1
+            Habitant[i].posx,Habitant[i].posy = -10000, -10000
+            Habitant[i].endroit, Habitant[i].preendroit = -1,-1
     return n,nb1,nb2
 
-
+"""
 # initialisation
 
 # d'abord en points blanc à des endroits aléatoire
@@ -248,11 +258,11 @@ while continuer: # boucle infinie
     pygame.display.update()  # truc qui affiche tout
     test+=1 # on compte le nombre de tours
 
-"""
-On regarde si le point a été rouge à un moment
-Si oui on ajoute son nombre de contamination, et on compte le nombre de point rouge
-Ensuite on divise la somme des contaminations par le nombre de rouge
-"""
+
+#On regarde si le point a été rouge à un moment
+#Si oui on ajoute son nombre de contamination, et on compte le nombre de point rouge
+#Ensuite on divise la somme des contaminations par le nombre de rouge
+
 for i in range(nbtot):
     if couleur[i] == 'r':
         sommeR0 += R0[i]
@@ -278,3 +288,4 @@ with open("stat modélisation conf peip - Feuille 1.csv", "a") as fichier:
     fichier.write(str(nbrougetot))
     fichier.write("\t")
     fichier.write(str(sommeR0/nbrougetot))
+"""
