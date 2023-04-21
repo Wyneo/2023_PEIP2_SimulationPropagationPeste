@@ -26,6 +26,7 @@ class habitant:
         self.endroit = endroit
         self.preendroit = preendroit
         self.objectif = objectif
+        self.ru = False
 
     def dessin(self):
         pygame.draw.circle(self.screen,self.color,(self.posx,self.posy),self.rayon)

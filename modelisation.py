@@ -21,14 +21,14 @@ screen = pygame.display.set_mode((screen_size_x, screen_size_y))
 # plutot en fps mais comme ça le nom est claire, pour plus de visibilté a baisser, sinon on laisse a 60 par convention (60 fps les écrans t'as capter)
 vitesse_affichage = 6
 simulation_active = True
-val_aleatoire = 10 # correspond au déplacement max des points d'un instant à l'autre
+val_aleatoire = 30 # correspond au déplacement max des points d'un instant à l'autre
 rayon_cercle = 1
-n=1
-test=0 # nombre de tours de boucle depuis que la fenêtre est lancée
+n = 1
+test = 0 # nombre de tours de boucle depuis que la fenêtre est lancée
 
 # nombre d'habitants au départ
 nbvert, nbjaune, nbrouge, nbrat, nbmort = 500, 0, 0, 25, 0
-nbtot = nbrouge+nbvert+nbjaune+nbrat+nbmort
+nbtot = nbvert+nbjaune+nbrouge+nbrat+nbmort
 
 # facteurs de chance (ex : factjr = facteur de jaune en rouge) compris entre 0 et 1
 factjr = 0.35
@@ -39,13 +39,19 @@ factrv = 0.8
 factgn = 1
 factvr = 0.6
 factgvj = 0.25
-# temps d'attente (ex : tattjr = temps d'attente de jaune en rouge) en millisecondes
-tattjr = int(3.5*9)
-tattjv = int(1.0*9)
-tattjn = int(4.0*9)
-tattrn = int(2.5*9)
-tattrv = int(1.0*9)
-tattgn = int(3.5*9)
+# temps d'attente (ex : tattjr = temps d'attente de jaune en rouge) en tour de boucle int(x*9), x=nbjours
+nbTBPJ = 24  # nb de tour de boucle par jour
+tattjr = int(3.5*nbTBPJ*9)
+tattjv = int(1.0*nbTBPJ*9)
+tattjn = int(4.0*nbTBPJ*9)
+tattrn = int(2.5*nbTBPJ*9)
+tattrv = int(1.0*nbTBPJ*9)
+tattgn = int(2.4*nbTBPJ*9) # au lieu de 3.5
+tattRUinf = int(0.5*nbTBPJ*9)
+tattRUsup = int(0.6*nbTBPJ*9)
+tattRUdedans=int(0.2*nbTBPJ*9)
+n2 = 1
+n3 = 1
 
 Habitant = [] # liste qui stockera tous les "objets" points
 R0 = [] # liste du nombre de gens contaminé par les points lors du passage de vert à rouge
@@ -121,7 +127,7 @@ def collision(c1,c2,nb1,nb2,nbtot,rayon_cercle,facteur,test):
             for j in range(nbtot):
                 if Habitant[j].color == c2:  # si le point est bien de la couleur c2
                     distance = ((Habitant[i].posx - Habitant[j].posx)**2+(Habitant[i].posy - Habitant[j].posy)**2)**(1/2)
-                    if (distance<(4*rayon_cercle)):
+                    if (distance<(2*rayon_cercle)):
                         col = True
                         pourcent = random.uniform(0,1)  # nombre aléatoire correspond au pourcentage de chance de changer de couleur
                         if pourcent < facteur:
