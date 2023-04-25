@@ -104,10 +104,7 @@ def f5ymin (x,fact2,p):
     return f
 def f6xmax (x,fact2,p):
     a, b = fonctlin(p[4][0], p[4][1], p[5][0], p[5][1])
-    a = p[4][0]/x
-    # b =  PBL!!!
     f = a * x + b
-    #print('xmax',a,b)
     return f
 def f6ymax (x,fact2,p):
     a, b = fonctlin(p[2][0], p[2][1], p[5][0], p[5][1])
@@ -116,13 +113,11 @@ def f6ymax (x,fact2,p):
 def f6xmin (x,fact2,p):
     a, b = fonctlin(p[2][0], p[2][1], p[3][0], p[3][1])
     f = a * x + b
-    #print('xmin', a, b)
     return f
 def f6ymin (x,fact2,p):
     a, b = fonctlin(p[3][0], p[3][1], p[4][0], p[4][1])
     f = a * x + b
     return f
-
 def f7ymax (x,fact2,p):
     a, b = fonctlin(p[14][0], p[14][1], p[15][0], p[15][1])
     f = a * x + b
@@ -171,19 +166,19 @@ def f9xmin (x,fact2,p):
     a,b = fonctlin(p[20][0],p[20][1],p[19][0],p[19][1])
     f = a * x + b
     return f
-def f10ymax (x,fact2,p): #f10ymax
+def f10xmax (x,fact2,p):
     a,b = fonctlin(p[28][0],p[28][1],p[29][0],p[29][1])
     f = a * x + b
     return f
-def f10ymin (x,fact2,p):
+def f10xmin (x,fact2,p):
     a,b = fonctlin(p[27][0],p[27][1],p[26][0],p[26][1])
     f = a * x + b
     return f
-def f10xmin (x,fact2,p):
+def f10ymax (x,fact2,p):
     a,b = fonctlin(p[26][0],p[26][1],p[29][0],p[29][1])
     f = a * x + b
     return f
-def f10xmax (x,fact2,p):
+def f10ymin (x,fact2,p):
     a,b = fonctlin(p[28][0],p[28][1],p[27][0],p[27][1])
     f = a * x + b
     return f
@@ -215,13 +210,11 @@ def firestexmin(x,fact2,p):
     return f
 def firesteymin(x,fact2,p):
     a,b = fonctlin(fact2*168,fact2*365,fact2*295,fact2*309)
-    #print(a, b)
     f = a*x+b
     #pygame.draw.line(WIN, BLACK, (0, a * 0 + b), (1000, a * 1000 + b))
     return f
 def firesteymax(x,fact2,p):
     a,b= fonctlin(fact2*292,fact2*636,fact2*416,fact2*584)
-    #print(a, b)
     f = a*x+b
     #pygame.draw.line(WIN, BLACK, (0, a * 0 + b), (1000, a * 1000 + b))
     return f
@@ -259,7 +252,6 @@ def fihtymin(x,fact2,p):
     a,b = fonctlin(fact2*302,fact2*62,fact2*484,fact2*168)
     f = a*x + b
     #pygame.draw.line(WIN, BLACK, (0, a * 0 + b), (1000, a * 1000 + b))
-    #print(a,b)
     return f
 def fihtymax(x,fact2,p):
     a,b = fonctlin(fact2*484, fact2*168,fact2*263,fact2*138)
@@ -269,13 +261,6 @@ def fihtymax(x,fact2,p):
 
 # renvoie true si dans la surface
 def verifchemin1(x,y,fact2,p):
-    """print(f1xmin(x, fact2, p))
-    print(f1xmax(x, fact2, p))
-    print()
-    print(f1ymin(x, fact2, p))
-    print(f1ymax(x, fact2, p))
-    print()
-    print(x, y)"""
     if (p[0][0] <= x <= p[12][0] and ((f1xmin(x,fact2,p) <= y <= f1xmax(x,fact2,p) and f1ymin(x,fact2,p) <= y <= f1ymax(x,fact2,p)))):
         #print("chemin 1")
         return True
@@ -296,13 +281,6 @@ def verifchemin5(x, y,fact2,p):
         #print("chemin 5")
         return True
 def verifchemin6(x, y,fact2,p):
-    """print(f6xmin(x, fact2, p))
-    print(f6xmax(x, fact2, p))
-    print()
-    print(f6ymin(x, fact2, p))
-    print(f6ymax(x, fact2, p))
-    print()
-    print(x, y)"""
     if (p[3][0] <= x <= p[5][0] and f6xmin(x,fact2,p) <= y <= f6xmax(x,fact2,p) and fihtymax(x,fact2,p) <= y <=f6ymax(x,fact2,p)):  # pbl ihtymax
         #print("chemin 6")
         return True
@@ -317,14 +295,7 @@ def verifchemin9(x, y,fact2,p):
     if (p[21][0] <= x <= p[19][0] and f9xmin(x,fact2,p) <= y <= f9xmax(x,fact2,p) and f9ymin(x,fact2,p) <= y <= f9ymax(x,fact2,p)):
         return True
 def verifchemin10(x, y,fact2,p):
-    """print(f10xmin(x,fact2,p))
-    print(f10xmax(x,fact2,p))
-    print()
-    print(f10ymin(x,fact2,p))
-    print(f10ymax(x,fact2,p))
-    print()
-    print(x,y)"""
-    if (p[27][0] <= x <= p[29][0] and f10xmin(x,fact2,p) <= y <= f10xmax(x,fact2,p) and f10ymin(x,fact2,p) <= y <= f10ymax(x,fact2,p)):
+    if (p[28][0] <= x <= p[26][0] and f10xmin(x, fact2, p) <= y <= f10xmax(x, fact2, p) and f10ymin(x, fact2,p) <= y <= f10ymax(x, fact2, p)):
         #print('chemin10')
         return True
 def verifchemin11(x, y,fact2,p):
@@ -355,7 +326,7 @@ def verif75(x, y, infocercles, rayon_cercle):
     if sqrt((x - infocercles[18][0][0]) ** 2 + (y - infocercles[18][0][1]) ** 2) < infocercles[18][1] - rayon_cercle:
         return True
 
-# inutiliser pour l'instant
+# inutiliser pour l'instant Déplacement dans les chemins selon une droite
 def VerifPos2(Habitant,i,d,sens,verifchemin):
     #print(Habitant[i].posy, f1ymin(Habitant[i].posx),Habitant[i].posx)
     for j in range(0, nbsurface):
@@ -380,19 +351,15 @@ def VerifPos2(Habitant,i,d,sens,verifchemin):
 # attribut un numéro aux hab selon la où ils sont, et la où ils étaients avant
 def endroit(Habitant, i, nbsurface,Verif,fact2,p,infocercles,rayon_cercle):
     for j in range(nbsurface):
-        if j < 14:  # exclu isitem
-            #print('fct',j)
-            if Habitant[i].position(Verif[j],fact2,p):  # vérifi la position
-                #print('j',j)
+        if j < 14:  # exclu les cercles
+            if Verif[j](Habitant[i].posx,Habitant[i].posy,fact2,p):  # vérifi la position
                 if j != Habitant[i].endroit:  # si l'hab était pas déjà la
                     Habitant[i].preendroit = Habitant[i].endroit  # l'ancienne position devient la nouvelle précédente
                     Habitant[i].endroit = j  # mise à jour de la position
                 else:
                     Habitant[i].endroit = j  # simple mise à jour de la position
-        if 14 <= j < 19:  # pareil mais avec isitem
-            #print(Habitant[i].endroit)
+        if 14 <= j < 19:  # pareil mais avec les cercles
             if Verif[j](Habitant[i].posx,Habitant[i].posy, infocercles,rayon_cercle):
-                #print(Habitant[i].endroit)
                 if j != Habitant[i].endroit:
                     Habitant[i].preendroit = Habitant[i].endroit
                     Habitant[i].endroit = j
@@ -427,31 +394,30 @@ def dansisitem(Habitant, i,infocercles,stop):
     r = sqrt(abs(Habitant[i].posx-infocercles[Habitant[i].endroit][0][0])**2+abs(Habitant[i].posy-infocercles[Habitant[i].endroit][0][1])**2)
     if not (stop[Habitant[i].endroit]):
         if r**2 > infocercles[Habitant[i].endroit][1]**2:
+            # si le points sort du coin en haut à gauche, on le remet sur la frontière du cercle, au point correspondant à un angle de pi/4
             if Habitant[i].posx > infocercles[Habitant[i].endroit][0][0] and Habitant[i].posy < infocercles[Habitant[i].endroit][0][1]:
                 Habitant[i].posx = infocercles[Habitant[i].endroit][0][0] + infocercles[Habitant[i].endroit][1] * cos(pi/4)
                 Habitant[i].posy = infocercles[Habitant[i].endroit][0][1] - infocercles[Habitant[i].endroit][1] * sin(pi/4)
+            # coin en bas à gauche
             elif Habitant[i].posx > infocercles[Habitant[i].endroit][0][0] and Habitant[i].posy > infocercles[Habitant[i].endroit][0][1]:
                 Habitant[i].posx = infocercles[Habitant[i].endroit][0][0] + infocercles[Habitant[i].endroit][1] * cos(7*pi / 4)
                 Habitant[i].posy = infocercles[Habitant[i].endroit][0][1] - infocercles[Habitant[i].endroit][1] * sin(7*pi / 4)
+            #coin en haut à droite
             elif Habitant[i].posx < infocercles[Habitant[i].endroit][0][0] and Habitant[i].posy < infocercles[Habitant[i].endroit][0][1]:
                 Habitant[i].posx = infocercles[Habitant[i].endroit][0][0] + infocercles[Habitant[i].endroit][1] * cos(3 * pi / 4)
                 Habitant[i].posy = infocercles[Habitant[i].endroit][0][1] - infocercles[Habitant[i].endroit][1] * sin(3 * pi / 4)
+            # coin en bas à droite
             elif Habitant[i].posx < infocercles[Habitant[i].endroit][0][0] and Habitant[i].posy > infocercles[Habitant[i].endroit][0][1]:
                 Habitant[i].posx = infocercles[Habitant[i].endroit][0][0] + infocercles[Habitant[i].endroit][1] * cos(5 * pi / 4)
                 Habitant[i].posy = infocercles[Habitant[i].endroit][0][1] - infocercles[Habitant[i].endroit][1] * sin(5 * pi / 4)
     return Habitant[i].posx, Habitant[i].posy
 
-def DéplacementPoints2(color, positionx, positiony, val_aleatoire, rayon_cercle, i, test, screen,Habitant,infocercles,fact2,points,fxmax,fxmin,fymax,fymin,stop,objectif,p,nbsurface,Verif):
+def DéplacementPoints2(color, positionx, positiony, val_aleatoire, rayon_cercle, i, test, screen,Habitant,infocercles,fact2,p,nbsurface,Verif):
     x = random.uniform(-val_aleatoire,val_aleatoire)  # génère une valeur aléatoire (correspondra au déplacement en x) entre -val_aleatoire et val_aleatoire
     y = random.uniform(-val_aleatoire,val_aleatoire)  # génère une valeur aléatoire (correspondra au déplacement en y) entre -val_aleatoire et val_aleatoire
-    #x,y=0,0
-    Habitant[i] = hab(color, positionx, positiony, test, x, y, rayon_cercle, i, screen, Habitant[i].endroit,Habitant[i].preendroit,objectif)  # appel la fonction hab
-    Habitant[i].endroit, Habitant[i].preendroit = endroit(Habitant, i, nbsurface, Verif, fact2, p, infocercles,rayon_cercle)  # attribut un numéro aux hab selon la où ils sont
-    Habitant[i].preendroit = Habitant[i].endroit
-    #if -1 < Habitant[i].endroit < 13:
-       # Habitant[i].posx, Habitant[i].posy = collmur(Habitant, i,fact2,points,fxmax,fxmin,fymax,fymin,p,stop)  # appel la fonction VerifPos
-    #if 13 <= Habitant[i].endroit < 18:
-      #  Habitant[i].posx, Habitant[i].posy = dansisitem(Habitant, i,infocercles,stop)
+    Habitant[i] = hab(color, positionx, positiony, test, x, y, rayon_cercle, i, screen, Habitant[i].endroit,Habitant[i].preendroit)  # appel la fonction hab
+    Habitant[i].endroit, Habitant[i].preendroit = endroit(Habitant, i, nbsurface, Verif, fact2, p, infocercles, rayon_cercle)  # attribut un numéro aux hab selon la où ils sont
+    Habitant[i].preendroit = Habitant[i].endroit  # premier tour, comme ça reste pas à -1
     return Habitant, x, y
 
 # inutiliser pour l'instant
@@ -473,29 +439,28 @@ def DéplacementPoints3(Habitant,i,val_aleatoire,fact2,points,fxmax,fxmin,fymax,
 
 # calcul la quantité d'hab par surface
 def calculprop(Habitant,i,prop,Verif,fact2,p,infocercles,rayon_cercle):
-    if -1 < Habitant[i].endroit < 14:
-        if Habitant[i].position(Verif[Habitant[i].endroit],fact2,p):
+    if -1 < Habitant[i].endroit < 14 and Habitant[i].color != 'gray':  # on compte pas les rats, pas besion d'exclure les morts ils sont partis loins
+        if Verif[Habitant[i].endroit](Habitant[i].posx,Habitant[i].posy,fact2,p):
             prop[Habitant[i].endroit] += 1
-    if 14 <= Habitant[i].endroit < 19:
+    if 14 <= Habitant[i].endroit < 19 and Habitant[i].color != 'gray':  # on compte pas les rats, pas besion d'exclure les morts ils sont partis loins
         if Verif[Habitant[i].endroit](Habitant[i].posx,Habitant[i].posy,infocercles,rayon_cercle):
             prop[Habitant[i].endroit] += 1
     return prop
 
 # vérifie qu'il n'y a pas trop d'hab dans les surfaces, et les envoies à leur surface d'avant si trop
-def verifprop(Habitant,i,prop,autorisation,stop,nbtot,nbsurface,fact2, points, fxmax, fxmin, fymax, fymin, p,infocercles,Verif,rayon_cercle):
+def verifprop(Habitant,prop,autorisation,stop,nbtot,nbsurface,fact2, points, fxmax, fxmin, fymax, fymin, p,infocercles,Verif,rayon_cercle):
     for i in range(nbtot):  # stop[surface] = True si trop d'hab dans la surface
         if prop[Habitant[i].endroit] > autorisation[Habitant[i].endroit]:
             stop[Habitant[i].endroit] = True
     for i in range(nbtot):
         prop = [0 for i in range(nbsurface)]
-        if stop[Habitant[i].endroit]:  # si trop d'hab
+        if stop[Habitant[i].endroit] and Habitant[i].color != 'gray':  # si trop d'hab, sauf si c'est un rat
             Habitant[i].preendroit, Habitant[i].endroit = Habitant[i].endroit,Habitant[i].preendroit  # inverse endroit et preendroit
-            #print('chg',Habitant[i].endroit,Habitant[i].preendroit)
-            if Habitant[i].endroit == -1 and Habitant[i].color != 'gray':
+            if Habitant[i].endroit == -1:
                 Habitant[i].posx,Habitant[i].posy = 0,0
-            if -1 < Habitant[i].endroit < 14 and Habitant[i].color != 'gray':
+            if -1 < Habitant[i].endroit < 14:  # recalcule la position pour qu'il soit dans leur nouvelle surface
                 Habitant[i].posx, Habitant[i].posy = collmur(Habitant, i, fact2, points, fxmax, fxmin, fymax, fymin, p,stop)  # appel la fonction VerifPos
-            if 14 <= Habitant[i].endroit < 19 and Habitant[i].color != 'gray':
+            if 14 <= Habitant[i].endroit < 19:
                 Habitant[i].posx, Habitant[i].posy = dansisitem(Habitant, i,infocercles,stop)
             for j in range(nbtot):  # recalcul du nombre d'hab par surface
                 prop = calculprop(Habitant, j, prop,Verif,fact2,p,infocercles,rayon_cercle)
@@ -503,7 +468,7 @@ def verifprop(Habitant,i,prop,autorisation,stop,nbtot,nbsurface,fact2, points, f
                 stop[Habitant[i].preendroit] = False
     return stop
 
-# inutiliser pour l'instant
+# inutiliser pour l'instant, ajouter un tab obj, et un attribut à Habitant
 def xyobjectif(Habitant,i,val_aleatoire):
     x, y = 0, 0
     alea = random.randint(0, 100)

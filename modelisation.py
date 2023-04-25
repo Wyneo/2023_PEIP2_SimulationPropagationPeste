@@ -63,10 +63,10 @@ nbrougetot = 0 # nb de points rouge qu'il y a eu au total
 Fonction qui dessine les cercles de couleurs voulus, sert seulement au moment d'initialiser les points
 entrées : couleur voulu, positions x et y du point, le temps à l'instant ou les points sont créé, déplacements x et y, numéro i du point
 """
-def hab(color,positionx,positiony,temps,x,y,rayon_cercle,i,screen,endroit,preendroit,objectif):
+def hab(color,positionx,positiony,temps,x,y,rayon_cercle,i,screen,endroit,preendroit):
     positionx += x
     positiony += y
-    cercle = habitant(color,positionx,positiony,temps,rayon_cercle,screen,endroit,preendroit,objectif)
+    cercle = habitant(color,positionx,positiony,temps,rayon_cercle,screen,endroit,preendroit)
     cercle.dessin() # dessine les points
     Habitant[i] = cercle # ajout des points dans la liste
     return Habitant[i]
@@ -127,7 +127,7 @@ def collision(c1,c2,nb1,nb2,nbtot,rayon_cercle,facteur,test):
             for j in range(nbtot):
                 if Habitant[j].color == c2:  # si le point est bien de la couleur c2
                     distance = ((Habitant[i].posx - Habitant[j].posx)**2+(Habitant[i].posy - Habitant[j].posy)**2)**(1/2)
-                    if (distance<(2*rayon_cercle)):
+                    if (distance<(rayon_cercle)):
                         col = True
                         pourcent = random.uniform(0,1)  # nombre aléatoire correspond au pourcentage de chance de changer de couleur
                         if pourcent < facteur:
@@ -148,7 +148,7 @@ def collision2(c1,c2,c3,nb1,nb2,nb3,nbtot,rayon_cercle,facteur,test):
             for j in range(nbtot):
                 if Habitant[j].color == c2:
                     distance = ((Habitant[i].posx - Habitant[j].posx)**2+(Habitant[i].posy - Habitant[j].posy)**2)**(1/2)
-                    if (distance < (4*rayon_cercle)):
+                    if (distance < (rayon_cercle)):
                         pourcent = random.uniform(0,1) # pourcentage de chance de changer de couleur
                         if pourcent < facteur:
                             Habitant[j].color = c3 # changement de couleur
@@ -174,7 +174,6 @@ def verifTempsSup(c1,c2,nb1,nb2,tattente,facteur,i,test):
             if c2 == 'black':
                 Habitant[i].posx, Habitant[i].posy = -10000, -10000
                 Habitant[i].endroit, Habitant[i].preendroit = -1, -1
-
     return nb1,nb2
 
 """
@@ -205,6 +204,7 @@ def rat(c1,c2,nb1,nb2,test,tattente,n,i):
             nb2 += 1
             Habitant[i].posx,Habitant[i].posy = -10000, -10000
             Habitant[i].endroit, Habitant[i].preendroit = -1,-1
+            #print('rat', nb1)
     return n,nb1,nb2
 
 """
