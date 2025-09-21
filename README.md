@@ -2,7 +2,7 @@
 
 ### Mots-clés : Simulation, Épidémies, Peste, Python
 
-### Projet : Simuler la propagation de la peste au sein du campus universitaire de la Chantrerie (Nantes) en utilisant les déplacements semi-aléatoires des étudiants.
+### Projet : Simuler la propagation de la peste au sein du campus universitaire de la Chantrerie (Nantes), en utilisant les déplacements semi-aléatoires des étudiants.
 
 Deux modélisations ont été effectuées. La première, plus simpliste, est constituée de points de différentes couleurs, avec des déplacements aléatoires. Les points verts sont les habitants sains, les jaunes sont atteints de la peste bubonique (moins mortelle), les rouges sont atteints de la peste pulmonaire (plus mortelle), les points gris représentent les rats (qui transmettent la peste), et les habitants morts sont représentés par des points noirs, donc invisibles sur le fond noir de la fenêtre graphique pygame.
 Lorsque deux points entrent en collision, ils peuvent changer d'états. Ces changements d'états sont régis par des paramètres représentant la probabilité d'occurrence de l'évènement. Une évolution temporelle de la peste est aussi implémentée.
@@ -13,5 +13,5 @@ Pour exécuter les modélisations il faut lancer le fichier "modelisationi.py" (
 
 Les résultats ainsi que plus de détails sont disponibles dans le rapport du projet.
 
-Projet réalisé avec Mm. Ndiaye, Mm. Tremier, Mm. Bachelier, Mm. Perrot, Mm. Racineau, Mm. Picart, M. Liégard. Codes programmés par Mm. Renoud Hallereau (moi-même) et M. Liégard.
+Projet réalisé avec Mm. Ndiaye, Mm. Tremier, Mm. Bachelier, Mm. Perrot, Mm. Racineau, Mm. Picart, M. Liégard. Codes programmés par Mm. Renoud Hallereau (moi-même) et M. Liégard.  
 Remerciements à M. Martinod pour son aide.
